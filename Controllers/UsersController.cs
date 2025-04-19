@@ -19,13 +19,6 @@ namespace NetManagement.Controllers
             _context = context;
         }
 
-        // GET: Users/CheckLogin
-        [HttpGet]
-        public IActionResult SignIn()
-        {
-            return View();
-        }
-
         // GET: Users
         public async Task<IActionResult> Index()
         {

@@ -28,7 +28,6 @@ namespace NetManagement.Models
         public decimal Balance { get; set; }
 
         [MaxLength(200, ErrorMessage = "Đường dẫn ảnh không được vượt quá 200 ký tự")]
-        [Url(ErrorMessage = "Đường dẫn ảnh không hợp lệ")]
         public string ImageUrl { get; set; } = "~/images/avatar-cute-3.jpg";
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;

@@ -9,6 +9,10 @@ namespace NetManagement.Data
 {
     public class NetManagementContext : DbContext
     {
+        public NetManagementContext()
+        {
+        }
+
         public NetManagementContext (DbContextOptions<NetManagementContext> options)
             : base(options)
         {
