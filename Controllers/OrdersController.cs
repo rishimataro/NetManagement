@@ -10,7 +10,7 @@ using NetManagement.Models;
 
 namespace NetManagement.Controllers
 {
-    public class OrdersController : Controller
+    public class OrdersController : BaseController
     {
         private readonly NetManagementContext _context;
 
@@ -49,6 +49,14 @@ namespace NetManagement.Controllers
         public IActionResult Create()
         {
             ViewData["ComputerId"] = new SelectList(_context.Computer, "Id", "Name");
+
+            var order = new Order
+            {
+                StartTime = DateTime.Now,
+                CreateAt = DateTime.Now,
+                isPay = false
+            };
+
             return View();
         }
 
@@ -57,17 +65,50 @@ namespace NetManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserId,ComputerId,StartTime,EndTime,TotalCost,CreateAt,IsDeleted")] Order order)
+        public async Task<IActionResult> Create([Bind("Id,UserId,ComputerId,StartTime,EndTime,TotalCost,CreateAt,isPay")] Order order)
         {
             if (ModelState.IsValid)
             {
+                // Ensure the Computer exists
+                var computer = await _context.Computer.FindAsync(order.ComputerId);
+                if (computer == null)
+                {
+                    ModelState.AddModelError("ComputerId", "The selected computer does not exist.");
+                    ViewData["ComputerId"] = new SelectList(_context.Computer, "Id", "Name", order.ComputerId);
+                    return View(order);
+                }
+
+                // Calculate the total cost based on the duration of the order
+                if (order.EndTime.HasValue)
+                {
+                    var duration = order.EndTime.Value - order.StartTime;
+                    order.TotalCost = (decimal)duration.TotalHours * computer.PricePerHour;
+                }
+                else
+                {
+                    order.TotalCost = 0; // Default value if EndTime is not set
+                }
+
+                // Update the computer's booking count
+                computer.BookingCount++;
+                _context.Update(computer);
+
+                // Set default values for the order
+                order.CreateAt = DateTime.Now;
+                order.isPay = false;
+
+                // Add the order to the database
                 _context.Add(order);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
+
+            // Repopulate the Computer dropdown in case of validation errors
             ViewData["ComputerId"] = new SelectList(_context.Computer, "Id", "Name", order.ComputerId);
             return View(order);
         }
+
 
         // GET: Orders/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -91,7 +132,7 @@ namespace NetManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,ComputerId,StartTime,EndTime,TotalCost,CreateAt,IsDeleted")] Order order)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,ComputerId,StartTime,EndTime,TotalCost,CreateAt,isPay")] Order order)
         {
             if (id != order.Id)
             {

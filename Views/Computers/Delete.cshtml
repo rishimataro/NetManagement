@@ -4,36 +4,111 @@
     ViewData["Title"] = "Delete";
 }
 
-<h1>Delete</h1>
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="form-wrapper col-md-6">
+        <div class="page-header-modern mb-4">
+            <h1 class="page-title">Xóa máy tính</h1>
+        </div>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Computer</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PricePerHour)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PricePerHour)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+        <div>
+            <table class="table table-striped table-bordered">
+                <tbody>
+                    <tr>
+                        <th class="col-sm-2">Tên máy tính</th>
+                        <td class="col-sm-10">@Html.DisplayFor(model => model.Name)</td>
+                    </tr>
+                    <tr>
+                        <th class="col-sm-2">Trạng thái</th>
+                        <td class="col-sm-10">
+                            @{
+                                var status = Model.Status.ToString().ToLower();
+                                var statusClass = status switch
+                                {
+                                    "available" => "status-available",
+                                    "inuse" => "status-inuse",
+                                    "maintenance" => "status-maintenance",
+                                    _ => ""
+                                };
+                                var statusText = status switch
+                                {
+                                    "available" => "Sẵn sàng",
+                                    "inuse" => "Đang sử dụng",
+                                    "maintenance" => "Bảo trì",
+                                    _ => "Không xác định"
+                                };
+                            }
+                            <span class="@statusClass">@statusText</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="col-sm-2">Giá mỗi giờ</th>
+                        <td class="col-sm-10">@Html.DisplayFor(model => model.PricePerHour)</td>
+                    </tr>
+                    <tr>
+                        <th class="col-sm-2">Số lần đặt</th>
+                        <td class="col-sm-10">@Html.DisplayFor(model => model.BookingCount)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="form-group d-flex justify-content-center gap-2">
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash-alt"></i> Xóa
+                </button>
+            </form>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Quay lại
+            </a>
+        </div>
+    </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận xóa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xóa thông tin này không? Hành động này không thể hoàn tác.
+            </div>
+            <div class="modal-footer">
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <button type="submit" class="btn btn-danger">Xác nhận</button>
+                </form>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+            // Khi người dùng nhấn "Xóa", hiển thị modal xác nhận
+        document.querySelector('.btn-danger').addEventListener('click', function(e) {
+            e.preventDefault(); // Ngừng hành động mặc định (ngừng gửi form ngay lập tức)
+
+            // Mở modal xác nhận
+            var modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+            modal.show(); // Hiển thị modal
+        });
+
+        // Khi người dùng nhấn "Xác nhận" trong modal
+        document.querySelector('#confirmDeleteModal .btn-danger').addEventListener('click', function() {
+            // Tìm form trong modal và submit form
+            var form = document.querySelector('form[asp-action="Delete"]');
+            form.submit(); // Gửi form để thực hiện xóa
+        });
+    </script>
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Delete.css" asp-append-version="true" />
+}
+

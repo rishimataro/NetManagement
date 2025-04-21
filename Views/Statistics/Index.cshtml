@@ -1,0 +1,100 @@
+@{
+    ViewData["Title"] = "Bảng điều khiển Thống kê";
+}
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+
+    <div class="row mt-4">
+        <!-- Revenue by Time Card -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Doanh thu theo Thời gian</h5>
+                    <p class="card-text">Xem thống kê doanh thu theo các khoảng thời gian cụ thể. Phân tích xu hướng doanh thu hàng ngày, hàng tuần hoặc hàng tháng.</p>
+                    <a href="@Url.Action("RevenueByTime")" class="btn btn-primary">Xem Thống kê</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue by Computer Card -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Doanh thu theo Máy</h5>
+                    <p class="card-text">Phân tích doanh thu được tạo ra bởi từng máy. Theo dõi hiệu suất và mẫu sử dụng.</p>
+                    <a href="@Url.Action("RevenueByComputer")" class="btn btn-primary">Xem Thống kê</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue by User Card -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Doanh thu theo Người dùng</h5>
+                    <p class="card-text">Xem thống kê doanh thu theo từng người dùng. Theo dõi mẫu chi tiêu và sở thích của người dùng.</p>
+                    <a href="@Url.Action("RevenueByUser")" class="btn btn-primary">Xem Thống kê</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Section -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Thống kê Nhanh</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="stat-card">
+                                <h5>Doanh thu Hôm nay</h5>
+                                <p class="stat-value">@ViewBag.TodayRevenue?.ToString("C") ?? "0 ₫"</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stat-card">
+                                <h5>Doanh thu Tuần này</h5>
+                                <p class="stat-value">@ViewBag.WeekRevenue?.ToString("C") ?? "0 ₫"</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stat-card">
+                                <h5>Doanh thu Tháng này</h5>
+                                <p class="stat-value">@ViewBag.MonthRevenue?.ToString("C") ?? "0 ₫"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .stat-card {
+        text-align: center;
+        padding: 20px;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+    }
+
+    .stat-value {
+        font-size: 24px;
+        font-weight: bold;
+        color: #007bff;
+        margin-top: 10px;
+    }
+
+    .card {
+        transition: transform 0.2s;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+</style> 

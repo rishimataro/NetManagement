@@ -7,7 +7,7 @@ namespace NetManagement.Models
         public int Id { get; set; }
 
         [Required]
-        public string UserId { get; set; }
+        public int UserId { get; set; }
 
         [Required]
         public int ComputerId { get; set; }
@@ -23,13 +23,13 @@ namespace NetManagement.Models
         [Range(0, double.MaxValue, ErrorMessage = "Total cost must be a non-negative value.")]
         public decimal TotalCost { get; set; }
 
+
         public DateTime CreateAt { get; set; } = DateTime.Now;
 
-        public bool IsDeleted { get; set; } = false;
+        public bool isPay { get; set; } = false;
 
         public User User { get; set; }
         public Computer Computer { get; set; }
-        public ICollection<Orderdetail>? OrderDetails { get; set; }
 
         public static ValidationResult? ValidateEndTime(DateTime? endTime, ValidationContext context)
         {

@@ -1,0 +1,96 @@
+﻿/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Title */
+h2.text-center {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Card */
+.card {
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Card Body */
+.card-body {
+    padding: 20px;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    color: #333;
+    margin-top: 15px;
+}
+
+/* Icon */
+.card-body i {
+    transition: color 0.3s ease;
+}
+
+/* Hover Effects */
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+    .card:hover i {
+        color: #007bff; /* Change icon color when hovering */
+    }
+
+/* Icon Color Customization */
+.text-primary {
+    color: #007bff !important;
+}
+
+.text-success {
+    color: #28a745 !important;
+}
+
+.text-warning {
+    color: #ffc107 !important;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+/* Column Layout */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.col-md-3 {
+    width: 22%;
+    margin: 10px;
+}
+
+.mb-4 {
+    margin-bottom: 1.5rem;
+}
+
+/* Link Styles */
+.text-decoration-none {
+    text-decoration: none;
+}
+
+.text-dark {
+    color: #333 !important;
+}
+
+    .text-dark:hover {
+        color: #0056b3; /* Darken color on hover */
+    }
+
+/* Margin Top for Container */
+.mt-5 {
+    margin-top: 3rem;
+}

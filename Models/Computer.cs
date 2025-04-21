@@ -15,6 +15,10 @@ namespace NetManagement.Models
 
         [Range(0, double.MaxValue, ErrorMessage = "Price per hour must be a non-negative value.")]
         public decimal PricePerHour { get; set; }
+
+        [Required]
+        [Range(0, int.MaxValue, ErrorMessage = "Booking count must be a non-negative value.")]
+        public int BookingCount { get; set; } = 0;
     }
 
     public enum ComputerStatus

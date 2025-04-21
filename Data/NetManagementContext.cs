@@ -21,6 +21,5 @@ namespace NetManagement.Data
         public DbSet<NetManagement.Models.Computer> Computer { get; set; } = default!;
         public DbSet<NetManagement.Models.User> User { get; set; } = default!;
         public DbSet<NetManagement.Models.Order> Order { get; set; } = default!;
-        public DbSet<NetManagement.Models.Orderdetail> Orderdetail { get; set; } = default!;
     }
 }

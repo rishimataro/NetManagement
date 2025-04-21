@@ -4,61 +4,77 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="form-wrapper col-md-6">
+        <div class="page-header-modern mb-4">
+            <h1 class="page-title">Chỉnh sửa đơn hàng</h1>
+        </div>
 
-<h4>Order</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
+
+            <div class="form-group mb-3">
+                <label asp-for="UserId" class="form-label">Mã người dùng</label>
                 <input asp-for="UserId" class="form-control" />
                 <span asp-validation-for="UserId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ComputerId" class="control-label"></label>
-                <select asp-for="ComputerId" class="form-control" asp-items="ViewBag.ComputerId"></select>
+
+            <div class="form-group mb-3">
+                <label asp-for="ComputerId" class="form-label">Máy sử dụng</label>
+                <select asp-for="ComputerId" class="form-select" asp-items="ViewBag.ComputerId"></select>
                 <span asp-validation-for="ComputerId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="StartTime" class="control-label"></label>
+
+            <div class="form-group mb-3">
+                <label asp-for="StartTime" class="form-label">Thời gian bắt đầu</label>
                 <input asp-for="StartTime" class="form-control" />
                 <span asp-validation-for="StartTime" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="EndTime" class="control-label"></label>
+
+            <div class="form-group mb-3">
+                <label asp-for="EndTime" class="form-label">Thời gian kết thúc</label>
                 <input asp-for="EndTime" class="form-control" />
                 <span asp-validation-for="EndTime" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="TotalCost" class="control-label"></label>
+
+            <div class="form-group mb-3">
+                <label asp-for="TotalCost" class="form-label">Tổng chi phí</label>
                 <input asp-for="TotalCost" class="form-control" />
                 <span asp-validation-for="TotalCost" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="CreateAt" class="control-label"></label>
+
+            <div class="form-group mb-3">
+                <label asp-for="CreateAt" class="form-label">Thời gian tạo</label>
                 <input asp-for="CreateAt" class="form-control" />
                 <span asp-validation-for="CreateAt" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
+
+            <div class="form-group mb-4">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsDeleted" /> @Html.DisplayNameFor(model => model.IsDeleted)
+                    <input class="form-check-input" asp-for="isPay" /> @Html.DisplayNameFor(model => model.isPay)
                 </label>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+
+            <div class="form-group d-flex justify-content-center gap-2">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save"></i> Lưu
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Quay lại
+                </a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Edit.css" asp-append-version="true" />
 }

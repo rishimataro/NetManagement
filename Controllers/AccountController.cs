@@ -11,7 +11,7 @@ using NetManagement.Models;
 
 namespace NetManagement.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
 
         private readonly NetManagementContext _context;
@@ -40,8 +40,7 @@ namespace NetManagement.Controllers
 
             if (ModelState.IsValid)
             {
-                var hashedPassword = model.Password.ToMd5Hash(model.UserName);
-                var user = _context.User.FirstOrDefault(u => u.UserName == model.UserName && u.Password == hashedPassword);
+                var user = _context.User.FirstOrDefault(u => u.UserName == model.UserName && u.Password == model.Password);
 
                 if (user != null)
                 {
@@ -51,11 +50,17 @@ namespace NetManagement.Controllers
                         new Claim(ClaimTypes.Role, user.IsAdmin ? "Admin" : "User"),
                         new Claim("Id", user.Id.ToString()),
                         new Claim(ClaimTypes.Email, user.Email),
-                        // new Claim("Balance", user.Balance.ToString())
+                        new Claim("Balance", user.Balance.ToString()),
+                        new Claim("ImageUrl", user.ImageUrl)
                     };
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+                    var authProperties = new AuthenticationProperties
+                    {
+                        IsPersistent = true, // Lưu đăng nhập
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30) // Thời gian hết hạn
+                    };
 
                     await HttpContext.SignInAsync(claimsPrincipal);
 

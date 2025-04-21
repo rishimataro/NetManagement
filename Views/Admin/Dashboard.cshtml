@@ -1,5 +1,57 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "Dashboard";
 }
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Dashboard.css" asp-append-version="true" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Danh sách chức năng</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-3 mb-4">
+            <a asp-controller="Users" asp-action="Index" class="text-decoration-none text-dark">
+                <div class="card text-center shadow-sm hover-shadow">
+                    <div class="card-body">
+                        <i class="fas fa-users fa-3x mb-3 text-primary"></i>
+                        <h5 class="card-title">Quản lý tài khoản</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <a asp-controller="Computers" asp-action="Index" class="text-decoration-none text-dark">
+                <div class="card text-center shadow-sm hover-shadow">
+                    <div class="card-body">
+                        <i class="fas fa-desktop fa-3x mb-3 text-success"></i>
+                        <h5 class="card-title">Quản lý máy tính</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <a asp-controller="Orders" asp-action="Index" class="text-decoration-none text-dark">
+                <div class="card text-center shadow-sm hover-shadow">
+                    <div class="card-body">
+                        <i class="fas fa-file-invoice-dollar fa-3x mb-3 text-warning"></i>
+                        <h5 class="card-title">Quản lý đơn hàng</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-3 mb-4">
+            <a asp-controller="Statistics" asp-action="Index" class="text-decoration-none text-dark">
+                <div class="card text-center shadow-sm hover-shadow">
+                    <div class="card-body">
+                        <i class="fas fa-chart-line fa-3x mb-3 text-danger"></i>
+                        <h5 class="card-title">Thống kê</h5>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>

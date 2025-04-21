@@ -29,41 +29,124 @@
 
     <!-- Template Stylesheet -->
     <link href="~/css/style.css" rel="stylesheet">
+    @RenderSection("Styles", required: false)
 </head>
 <body>
-    <div>
+    <div class="container-fluid position-relative d-flex p-0">
+        @if (ViewBag.UserName != null)
+        {
+            <!-- Sidebar Start -->
+            <div class="sidebar pe-4 pb-3">
+                <nav class="navbar bg-light navbar-light">
+                    <a href="/" class="navbar-brand mx-4 mb-3">
+                        <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>NetManagement</h3>
+                    </a>
+                    <div class="d-flex align-items-center ms-4 mb-4">
+                        <div class="position-relative">
+                            @if (!string.IsNullOrEmpty(ViewBag.Image))
+                            {
+                                <img class="rounded-circle" src="@Url.Content(ViewBag.Image)" alt="User Image" style="width: 40px; height: 40px;">
+                            }
+                            else
+                            {
+                                <i class="fas fa-user-circle" style="font-size: 40px;"></i>
+                            }
+                        </div>
+                        <div class="ms-3">
+                            <h6 class="mb-0">@ViewBag.UserName</h6>
+                            <span>@(User.IsInRole("Admin") ? "Quản trị viên" : "Người dùng")</span>
+                        </div>
+                    </div>
+                    <div class="navbar-nav w-100">
+                        <a asp-controller="Home" asp-action="Index" class="nav-item nav-link">
+                            <i class="fas fa-home me-2"></i>Trang chủ
+                        </a>
+                        <a asp-controller="Computers" asp-action="Index" class="nav-item nav-link">
+                            <i class="fas fa-desktop me-2"></i>Quản lý máy tính
+                        </a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a asp-controller="Users" asp-action="Index" class="nav-item nav-link">
+                                <i class="fas fa-users me-2"></i>Quản lý tài khoản
+                            </a>
+                            <a asp-controller="Orders" asp-action="Index" class="nav-item nav-link">
+                                <i class="fas fa-shopping-cart me-2"></i>Quản lý đơn hàng
+                            </a>
+                            <a asp-controller="Statistics" asp-action="Index" class="nav-item nav-link">
+                                <i class="fas fa-chart-bar me-2"></i>Thống kê
+                            </a>
+                        }
+                        <a asp-controller="Account" asp-action="Profile" class="nav-item nav-link">
+                            <i class="fas fa-user me-2"></i>Thông tin cá nhân
+                        </a>
+                        <a asp-controller="Account" asp-action="Logout" class="nav-item nav-link">
+                            <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                        </a>
+                    </div>
+                </nav>
+            </div>
+            <!-- Sidebar End -->
+        }
+
         <!-- Content Start -->
         <div class="content">
             <!-- Navbar Start -->
             <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
-                <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
-                    <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
-                </a>
                 <a href="#" class="sidebar-toggler flex-shrink-0">
                     <i class="fa fa-bars"></i>
                 </a>
-                <form class="d-none d-md-flex ms-4">
-                    <input class="form-control border-0" type="search" placeholder="Search">
+                <form asp-controller="@ViewBag.ControllerName" asp-action="Search" method="get" class="d-none d-md-flex ms-4">
+                    <input class="form-control border-0" type="search" name="searchString" placeholder="Tìm kiếm">
                 </form>
                 <div class="navbar-nav align-items-center ms-auto">
                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <i class="fa fa-envelope me-lg-2"></i>
-                            <span class="d-none d-lg-inline-flex">Message</span>
-                        </a>
-                    </div>
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <img class="rounded-circle me-lg-2" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                            <span class="d-none d-lg-inline-flex">John Doe</span>
+                            @if (!string.IsNullOrEmpty(ViewBag.Image))
+                            {
+                                <img class="rounded-circle me-lg-2" src="@Url.Content(ViewBag.Image)" alt="User Image" style="width: 40px; height: 40px;">
+                            }
+                            else
+                            {
+                                <i class="fas fa-user-circle me-lg-2" style="font-size: 40px;"></i>
+                            }
+                            <span class="d-none d-lg-inline-flex">@(ViewBag.UserName ?? "Khách")</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                            <a asp-controller="Computers" asp-action="Index" class="dropdown-item">Quản lý máy tính</a>
-                            <a asp-controller="Users" asp-action="Index" class="dropdown-item">Quản lý tài khoản</a> @*chưa làm*@
-                            <a asp-controller="Admin" asp-action="Index" class="dropdown-item">Tài khoản</a> @*chưa làm*@
-                            <a asp-controller="Admin" asp-action="Statistical" class="dropdown-item">Thống kê</a> @*chưa làm*@
-                            <a asp-controller="Account" asp-action="Logout" class="dropdown-item">Đăng xuất</a> @*chưa làm*@
-
+                            <div class="dropdown-header bg-light py-2">
+                                <div class="d-flex align-items-center">
+                                    @if (!string.IsNullOrEmpty(ViewBag.Image))
+                                    {
+                                        <img class="rounded-circle me-2" src="@Url.Content(ViewBag.Image)" alt="User Image" style="width: 32px; height: 32px;">
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-user-circle me-2" style="font-size: 32px;"></i>
+                                    }
+                                    <div>
+                                        <h6 class="mb-0">@(ViewBag.UserName ?? "Khách")</h6>
+                                        <small class="text-muted">@(User.IsInRole("Admin") ? "Quản trị viên" : ViewBag.UserName != null ? "Người dùng" : "Khách")</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            @if (ViewBag.UserName != null)
+                            {
+                                <a asp-controller="Account" asp-action="Profile" class="dropdown-item">
+                                    <i class="fas fa-user me-2"></i>Thông tin cá nhân
+                                </a>
+                                <a asp-controller="Account" asp-action="Logout" class="dropdown-item">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                                </a>
+                            }
+                            else
+                            {
+                                <a asp-controller="Account" asp-action="Login" class="dropdown-item">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
+                                </a>
+                                <a asp-controller="Account" asp-action="Register" class="dropdown-item">
+                                    <i class="fas fa-user-plus me-2"></i>Đăng ký
+                                </a>
+                            }
                         </div>
                     </div>
                 </div>
@@ -71,7 +154,7 @@
             <!-- Navbar End -->
             <div style="min-height:600px;">@RenderBody()</div>
             
-			@await Html.PartialAsync("_Footer")
+            @await Html.PartialAsync("_Footer")
         </div>
         <!-- Content End -->
     </div>
@@ -88,6 +171,6 @@
     <script src="~/lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
     <script src="~/js/main.js"></script>
-	@await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -4,40 +4,161 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="form-wrapper col-md-6">
+        <div class="page-header-modern mb-4">
+            <h1 class="page-title">Thêm máy tính</h1>
+        </div>
 
-<h4>Computer</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input class="form-control" value="@Model.Name" readonly />
+                <input asp-for="Name" type="hidden" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" class="form-control"></select>
+
+
+            <div class="form-group mb-3">
+                <label asp-for="Status" class="form-label"></label>
+                <select asp-for="Status" class="form-select">
+                    <option value="">-- Chọn trạng thái --</option>
+                    <option value="Available">Sẵn sàng</option>
+                    <option value="InUse">Đang sử dụng</option>
+                    <option value="Maintenance">Bảo trì</option>
+                </select>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="PricePerHour" class="control-label"></label>
-                <input asp-for="PricePerHour" class="form-control" />
+
+            <div class="form-group mb-3">
+                <label asp-for="PricePerHour" class="form-label"></label>
+                <input asp-for="PricePerHour" class="form-control" placeholder="Nhập giá theo giờ" />
                 <span asp-validation-for="PricePerHour" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+
+            <div class="form-group mb-4">
+                <label asp-for="BookingCount" class="form-label"></label>
+                <input asp-for="BookingCount" class="form-control" value="0" readonly />
+                <span asp-validation-for="BookingCount" class="text-danger"></span>
+            </div>
+
+            <div class="form-group d-flex justify-content-center gap-2">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-plus-circle"></i> Tạo mới
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Quay lại
+                </a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
+
+<style>
+    .min-vh-100 {
+        min-height: 100vh;
+    }
+
+    .form-wrapper {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .page-header-modern {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #f8f9fa;
+        padding: 12px 20px;
+        border-radius: 12px;
+        box-shadow: inset 0 -1px 0 rgba(0,0,0,0.05);
+    }
+
+    .page-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--primary);
+        margin: 0;
+    }
+
+    form label {
+        font-weight: 500;
+        color: #34495e;
+    }
+
+    form .form-control,
+    form .form-select {
+        border-radius: 8px;
+        border: 1px solid #ced4da;
+        box-shadow: none;
+        transition: all 0.2s ease-in-out;
+    }
+
+        form .form-control:focus,
+        form .form-select:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
+        }
+
+    .form-group.d-flex.justify-content-center {
+        margin-top: 20px;
+    }
+
+    .btn-success, .btn-secondary {
+        background-color: transparent;
+        border-radius: 10px;
+        padding: 6px 16px;
+        font-weight: 500;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .btn-success{
+        border: 1.8px solid var(--primary);
+        color: var(--primary);
+    }
+
+    .btn-secondary{
+        border: 1.8px solid #6c757d;
+        color: #6c757d;
+    }
+
+        .btn-success:hover {
+            background-color: var(--primary);
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: ##6c757d;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+    .text-danger {
+        font-size: 0.9rem;
+    }
+
+    form .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .row > .col-md-6 {
+    margin-top: 0;
+    padding-top: 0;
+}
+</style>

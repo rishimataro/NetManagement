@@ -10,7 +10,7 @@ using NetManagement.Models;
 
 namespace NetManagement.Controllers
 {
-    public class ComputersController : Controller
+    public class ComputersController : BaseController
     {
         private readonly NetManagementContext _context;
 
@@ -46,7 +46,15 @@ namespace NetManagement.Controllers
         // GET: Computers/Create
         public IActionResult Create()
         {
-            return View();
+            var lastId = _context.Computer.OrderByDescending(c => c.Id).Select(c => c.Id).FirstOrDefault();
+            var computer = new Computer
+            {
+                Name = $"Máy {lastId + 1}",
+                Status = ComputerStatus.Available,
+                PricePerHour = 0,
+                BookingCount = 0
+            };
+            return View(computer);
         }
 
         // POST: Computers/Create
@@ -54,8 +62,14 @@ namespace NetManagement.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Status,PricePerHour")] Computer computer)
+        public async Task<IActionResult> Create([Bind("Id,Status,PricePerHour")] Computer computer)
         {
+            var lastId = _context.Computer.OrderByDescending(c => c.Id).Select(c => c.Id).FirstOrDefault();
+            computer.Name = $"Máy{lastId + 1}";
+            computer.BookingCount = 0;
+
+            ModelState.Remove("Name");
+
             if (ModelState.IsValid)
             {
                 _context.Add(computer);
@@ -64,6 +78,7 @@ namespace NetManagement.Controllers
             }
             return View(computer);
         }
+
 
         // GET: Computers/Edit/5
         public async Task<IActionResult> Edit(int? id)

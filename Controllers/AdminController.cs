@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace NetManagement.Controllers
 {
-    [Authorize(Roles = "Admin")]
-    public class AdminController : Controller
+    //[Authorize(Roles = "Admin")]
+    public class AdminController : BaseController
     {
         public ActionResult Dashboard()
         {

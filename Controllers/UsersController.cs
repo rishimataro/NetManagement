@@ -7,10 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NetManagement.Data;
 using NetManagement.Models;
+using NetManagement.Helpers;
 
 namespace NetManagement.Controllers
 {
-    public class UsersController : Controller
+    public class UsersController : BaseController
     {
         private readonly NetManagementContext _context;
 
@@ -46,7 +47,12 @@ namespace NetManagement.Controllers
         // GET: Users/Create
         public IActionResult Create()
         {
-            return View();
+            var user = new User
+            {
+                Balance = 0,
+                CreatedAt = DateTime.Now
+            };
+            return View(user);
         }
 
         // POST: Users/Create
@@ -58,6 +64,10 @@ namespace NetManagement.Controllers
         {
             if (ModelState.IsValid)
             {
+
+                user.CreatedAt = DateTime.Now;
+                user.Balance = 0;
+
                 _context.Add(user);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

@@ -1,0 +1,152 @@
+﻿@{
+    ViewData["Title"] = "Doanh thu theo Thời gian";
+}
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+
+    <!-- Form for selecting date range -->
+    <form method="get" asp-action="RevenueByTime" class="mb-4">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="startDate">Ngày bắt đầu</label>
+                    <input type="date" class="form-control"
+                           id="startDate"
+                           name="startDate"
+                           value="@ViewBag.StartDate?.ToString("yyyy-MM-dd")"
+                           required />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="endDate">Ngày kết thúc</label>
+                    <input type="date" class="form-control"
+                           id="endDate"
+                           name="endDate"
+                           value="@ViewBag.EndDate?.ToString("yyyy-MM-dd")"
+                           required />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <button type="submit" class="btn btn-primary form-control">Xem Thống kê</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Display revenue summary -->
+    @if (ViewBag.Revenue != null)
+    {
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3 class="mb-0">Tổng quan Doanh thu</h3>
+            </div>
+            <div class="card-body">
+                <h4>Tổng doanh thu từ @ViewBag.StartDate?.ToString("yyyy-MM-dd") đến @ViewBag.EndDate?.ToString("yyyy-MM-dd"): @ViewBag.Revenue.ToString("C")</h4>
+                
+                <!-- Revenue Chart -->
+                <div class="mt-4">
+                    <canvas id="revenueChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Display order details if available -->
+    @if (ViewBag.Orders != null && ViewBag.Orders.Count > 0)
+    {
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Chi tiết Đơn hàng</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Mã đơn hàng</th>
+                                <th>Người dùng</th>
+                                <th>Máy</th>
+                                <th>Thời gian bắt đầu</th>
+                                <th>Thời gian kết thúc</th>
+                                <th>Tổng chi phí</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in ViewBag.Orders)
+                            {
+                                <tr>
+                                    <td>@order.Id</td>
+                                    <td>@order.User?.UserName ?? "N/A"</td>
+                                    <td>@order.Computer?.Name ?? "N/A"</td>
+                                    <td>@order.StartTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                    <td>@order.EndTime?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A"</td>
+                                    <td>@order.TotalCost.ToString("C")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+    else if (ViewBag.Revenue != null)
+    {
+        <div class="alert alert-info">
+            Không có dữ liệu cho khoảng thời gian đã chọn.
+        </div>
+    }
+
+    <!-- Display validation errors -->
+    @if (ViewData.ModelState.ErrorCount > 0)
+    {
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            </ul>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var revenueData = @Html.Raw(Json.Serialize(ViewBag.RevenueByPeriod));
+            var ctx = document.getElementById('revenueChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(revenueData),
+                    datasets: [{
+                        label: 'Doanh thu',
+                        data: Object.values(revenueData),
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString() + ' ₫';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}

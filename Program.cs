@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NetManagement.Data;
+using NetManagement.Services;
 namespace NetManagement
 {
     public class Program
@@ -29,6 +30,8 @@ namespace NetManagement
                 options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
             });
 
+            builder.Services.AddScoped<StatisticsService>();
+
             var app = builder.Build();
 
             if (!app.Environment.IsDevelopment())
@@ -46,7 +49,7 @@ namespace NetManagement
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
+                pattern: "{controller=Admin}/{action=Dashboard}/{id?}")
                 .WithStaticAssets();
 
             app.Run();
