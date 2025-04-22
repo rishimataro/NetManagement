@@ -46,7 +46,7 @@ namespace NetManagement.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Computer");
+                    b.ToTable("Computer", (string)null);
                 });
 
             modelBuilder.Entity("NetManagement.Models.Order", b =>
@@ -84,7 +84,7 @@ namespace NetManagement.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Order");
+                    b.ToTable("Order", (string)null);
                 });
 
             modelBuilder.Entity("NetManagement.Models.User", b =>
@@ -124,7 +124,7 @@ namespace NetManagement.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("User");
+                    b.ToTable("User", (string)null);
                 });
 
             modelBuilder.Entity("NetManagement.Models.Order", b =>

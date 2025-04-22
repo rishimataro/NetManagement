@@ -28,19 +28,19 @@ namespace NetManagement.Controllers
         {
             ViewData["Title"] = "SignIn";
             ViewBag.returnURL = returnURL;
-            return View(new User());
+            return View(new LoginModel());
         }
 
         // POST: AccountController/SignIn  
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SignIn(User model, string? returnURL)
+        public async Task<IActionResult> SignIn(LoginModel model, string? returnURL)
         {
             ViewBag.ReturnUrl = returnURL;
 
             if (ModelState.IsValid)
             {
-                var user = _context.User.FirstOrDefault(u => u.UserName == model.UserName && u.Password == model.Password);
+                var user = _context.User.FirstOrDefault(u => u.UserName == model.Username && u.Password == model.Password);
 
                 if (user != null)
                 {
@@ -58,29 +58,28 @@ namespace NetManagement.Controllers
                     var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
                     var authProperties = new AuthenticationProperties
                     {
-                        IsPersistent = true, // Lưu đăng nhập
-                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30) // Thời gian hết hạn
+                        IsPersistent = model.RememberMe,
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
                     };
 
-                    await HttpContext.SignInAsync(claimsPrincipal);
+                    await HttpContext.SignInAsync(claimsPrincipal, authProperties);
 
                     if (!string.IsNullOrEmpty(returnURL) && Url.IsLocalUrl(returnURL))
                     {
                         return Redirect(returnURL);
                     }
 
-                    //return RedirectToAction("Index", "Home");
                     if(user.IsAdmin)
                     {
                         return RedirectToAction("Dashboard", "Admin");
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Client");
                     }
                 }
 
-                ModelState.AddModelError("", "Tên đăng nhập hoặc mật khẩu không đúng.");
+                ModelState.AddModelError(string.Empty, "Tên đăng nhập hoặc mật khẩu không đúng.");
             }
 
             return View(model);
@@ -103,7 +102,16 @@ namespace NetManagement.Controllers
         {
             try
             {
-                _context.Add(model);
+                var user = new User
+                {
+                    UserName = model.UserName,
+                    Email = model.Email,
+                    Password = model.Password,
+                    Balance = 0,
+                    ImageUrl = "~/img/user.jpg",
+                    CreatedAt = DateTime.Now
+                };
+                _context.Add(user);
                 _context.SaveChanges();
             }
             catch (Exception ex)
@@ -112,7 +120,15 @@ namespace NetManagement.Controllers
             }
 
             return RedirectToAction("Index", "Home");
-            }
+        }
+        #endregion
+
+        #region Logout
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("SignIn", "Account");
+        }
         #endregion
     }
 }

@@ -1,0 +1,112 @@
+@model NetManagement.Models.Order
+
+@{
+    ViewData["Title"] = "Phiên sử dụng";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <div class="text-center mb-4">
+                    <h3 class="text-primary">
+                        <i class="fas fa-desktop me-2"></i>
+                        Phiên đang sử dụng
+                    </h3>
+                    <p class="text-muted">Thông tin chi tiết về phiên sử dụng máy tính của bạn</p>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="card bg-white shadow-sm">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="text-center mb-4">
+                                            <h4 class="text-primary mb-3">@Model.Computer.Name</h4>
+                                            <p class="text-muted mb-0">
+                                                <i class="fas fa-clock me-2"></i>
+                                                Giá: @Model.Computer.PricePerHour.ToString("N0") VNĐ/giờ
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="text-center mb-4">
+                                            <h4 class="text-primary mb-3" id="duration">00:00:00</h4>
+                                            <p class="text-muted mb-0">
+                                                <i class="fas fa-money-bill me-2"></i>
+                                                Chi phí: <span id="currentCost">0 VNĐ</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row mt-4">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label text-muted">
+                                                <i class="fas fa-calendar me-2"></i>
+                                                Bắt đầu lúc
+                                            </label>
+                                            <div class="form-control-plaintext">
+                                                @Model.StartTime.ToString("HH:mm:ss dd/MM/yyyy")
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label text-muted">
+                                                <i class="fas fa-user me-2"></i>
+                                                Người dùng
+                                            </label>
+                                            <div class="form-control-plaintext">
+                                                @ViewBag.UserName
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-light border-0 text-center py-3">
+                                <form asp-action="EndSession" method="post">
+                                    <input type="hidden" name="orderId" value="@Model.Id" />
+                                    <button type="submit" class="btn btn-danger btn-lg px-5">
+                                        <i class="fas fa-stop-circle me-2"></i>
+                                        Kết thúc phiên
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const startTime = new Date('@Model.StartTime.ToString("yyyy-MM-dd HH:mm:ss")');
+        const pricePerHour = @Model.Computer.PricePerHour;
+
+        function updateTimeAndCost() {
+            const now = new Date();
+            const diff = now - startTime;
+
+            // Tính thời gian sử dụng
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            // Format thời gian
+            const duration = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            document.getElementById('duration').textContent = duration;
+
+            // Tính và format chi phí
+            const cost = (diff / (1000 * 60 * 60)) * pricePerHour;
+            document.getElementById('currentCost').textContent = `${Math.round(cost).toLocaleString('vi-VN')} VNĐ`;
+        }
+
+        // Cập nhật ngay lập tức và sau đó mỗi giây
+        updateTimeAndCost();
+        setInterval(updateTimeAndCost, 1000);
+    </script>
+} 

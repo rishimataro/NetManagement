@@ -1,5 +1,58 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@model IEnumerable<NetManagement.Models.Computer>
+
 @{
+    ViewData["Title"] = "Chọn máy tính";
 }
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <h6 class="mb-4">Danh sách máy tính</h6>
+                <div class="row">
+                    @foreach (var item in Model)
+                    {
+                        <div class="col-md-4 col-lg-3 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">@item.Name</h5>
+                                    <div class="mb-3">
+                                        @switch (item.Status)
+                                        {
+                                            case NetManagement.Models.ComputerStatus.Available:
+                                                <span class="badge bg-success">Có sẵn</span>
+                                                break;
+                                            case NetManagement.Models.ComputerStatus.InUse:
+                                                <span class="badge bg-danger">Đang sử dụng</span>
+                                                break;
+                                            case NetManagement.Models.ComputerStatus.Maintenance:
+                                                <span class="badge bg-warning">Bảo trì</span>
+                                                break;
+                                        }
+                                    </div>
+                                    <div class="mb-2">
+                                        <i class="fas fa-money-bill-wave me-2"></i>
+                                        <span>@item.PricePerHour.ToString("N0") VNĐ/giờ</span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <i class="fas fa-history me-2"></i>
+                                        <span class="badge bg-info">Đã đặt @item.BookingCount lần</span>
+                                    </div>
+                                    @if (item.Status == NetManagement.Models.ComputerStatus.Available)
+                                    {
+                                        <a asp-action="UseComputer" asp-route-id="@item.Id" class="btn btn-primary w-100">
+                                            <i class="fas fa-play me-2"></i>Sử dụng
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

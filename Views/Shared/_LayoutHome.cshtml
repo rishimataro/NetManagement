@@ -30,121 +30,268 @@
     <!-- Template Stylesheet -->
     <link href="~/css/style.css" rel="stylesheet">
     @RenderSection("Styles", required: false)
+
+    <style>
+        .nav-avatar {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #009EF7;
+        }
+        .nav-user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .nav-user-name {
+            font-weight: 500;
+            color: #6C7293;
+            margin-bottom: 0;
+        }
+        .nav-balance {
+            font-size: 0.875rem;
+            color: #009EF7;
+            margin-left: 10px;
+            margin-bottom: 0;
+        }
+        .user-info-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .user-dropdown {
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .user-dropdown:hover {
+            background-color: rgba(0, 158, 247, 0.1);
+        }
+
+        .user-icon {
+            color: #009EF7;
+            margin-right: 12px;
+        }
+
+        .user-info {
+            margin-right: 8px;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: #2B2B43;
+            font-size: 14px;
+            display: block;
+            line-height: 1.2;
+        }
+
+        .user-balance {
+            color: #009EF7;
+            font-size: 13px;
+            display: block;
+            line-height: 1.2;
+        }
+
+        .dropdown-toggle::after {
+            color: #6C7293;
+            margin-left: 8px;
+        }
+
+        .dropdown-menu {
+            margin-top: 10px !important;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border: none;
+            border-radius: 8px;
+        }
+
+        .dropdown-item {
+            padding: 8px 20px;
+            font-size: 14px;
+            color: #2B2B43;
+        }
+
+        .dropdown-item:hover {
+            background-color: rgba(0, 158, 247, 0.1);
+            color: #009EF7;
+        }
+
+        .dropdown-item i {
+            width: 20px;
+            margin-right: 8px;
+            color: #6C7293;
+        }
+
+        .dropdown-item:hover i {
+            color: #009EF7;
+        }
+
+        .dropdown-divider {
+            margin: 8px 0;
+            border-color: #f0f0f0;
+        }
+
+        .footer {
+            background: #FFFFFF;
+            padding: 20px 0;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .footer-brand h3 {
+            color: #009EF7;
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            color: #6C7293;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #009EF7;
+        }
+
+        .footer-info {
+            text-align: right;
+        }
+
+        @@media (max-width: 768px) {
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .footer-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .footer-info {
+                text-align: center;
+            }
+
+            .footer-brand {
+                align-items: center;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container-fluid position-relative d-flex p-0">
-        @if (ViewBag.UserName != null)
-        {
-            <!-- Sidebar Start -->
-            <div class="sidebar pe-4 pb-3">
-                <nav class="navbar bg-light navbar-light">
-                    <a href="/" class="navbar-brand mx-4 mb-3">
-                        <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>NetManagement</h3>
-                    </a>
-                    <div class="d-flex align-items-center ms-4 mb-4">
-                        <div class="position-relative">
-                            @if (!string.IsNullOrEmpty(ViewBag.Image))
-                            {
-                                <img class="rounded-circle" src="@Url.Content(ViewBag.Image)" alt="User Image" style="width: 40px; height: 40px;">
-                            }
-                            else
-                            {
-                                <i class="fas fa-user-circle" style="font-size: 40px;"></i>
-                            }
-                        </div>
-                        <div class="ms-3">
-                            <h6 class="mb-0">@ViewBag.UserName</h6>
-                            <span>@(User.IsInRole("Admin") ? "Quản trị viên" : "Người dùng")</span>
-                        </div>
-                    </div>
-                    <div class="navbar-nav w-100">
-                        <a asp-controller="Home" asp-action="Index" class="nav-item nav-link">
-                            <i class="fas fa-home me-2"></i>Trang chủ
-                        </a>
-                        <a asp-controller="Computers" asp-action="Index" class="nav-item nav-link">
-                            <i class="fas fa-desktop me-2"></i>Quản lý máy tính
-                        </a>
-                        @if (User.IsInRole("Admin"))
+        <!-- Content Start -->
+        <div class="content w-100">
+            <!-- Navbar Start -->
+            <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
+                <a href="/" class="navbar-brand d-flex d-lg-none me-4">
+                    <h2 class="text-primary mb-0"><i class="fa fa-hashtag"></i></h2>
+                </a>
+                <a href="/" class="navbar-brand d-none d-lg-flex me-4">
+                    <h3 class="text-primary mb-0"><i class="fa fa-hashtag"></i>NetManagement</h3>
+                </a>
+                <div class="navbar-nav align-items-center ms-auto">
+                    <div class="nav-item">
+                        @if (ViewBag.IsAdmin)
                         {
-                            <a asp-controller="Users" asp-action="Index" class="nav-item nav-link">
+                            <a asp-controller="Computers" asp-action="Index" class="nav-link">
+                                <i class="fas fa-desktop me-2"></i>Quản lý máy tính
+                            </a>
+                        }
+                    </div>
+                    <div class="nav-item">
+                        @if (ViewBag.IsAdmin)
+                        {
+                            <a asp-controller="Users" asp-action="Index" class="nav-link">
                                 <i class="fas fa-users me-2"></i>Quản lý tài khoản
                             </a>
-                            <a asp-controller="Orders" asp-action="Index" class="nav-item nav-link">
+                        }
+                    </div>
+                    <div class="nav-item">
+                        @if (ViewBag.IsAdmin)
+                        {
+                            <a asp-controller="Orders" asp-action="Index" class="nav-link">
                                 <i class="fas fa-shopping-cart me-2"></i>Quản lý đơn hàng
                             </a>
-                            <a asp-controller="Statistics" asp-action="Index" class="nav-item nav-link">
+                        }
+                    </div>
+                    <div class="nav-item">
+                        @if (ViewBag.IsAdmin)
+                        {
+                            <a asp-controller="Statistics" asp-action="Index" class="nav-link">
                                 <i class="fas fa-chart-bar me-2"></i>Thống kê
                             </a>
                         }
-                        <a asp-controller="Account" asp-action="Profile" class="nav-item nav-link">
-                            <i class="fas fa-user me-2"></i>Thông tin cá nhân
-                        </a>
-                        <a asp-controller="Account" asp-action="Logout" class="nav-item nav-link">
-                            <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
-                        </a>
                     </div>
-                </nav>
-            </div>
-            <!-- Sidebar End -->
-        }
-
-        <!-- Content Start -->
-        <div class="content">
-            <!-- Navbar Start -->
-            <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
-                <a href="#" class="sidebar-toggler flex-shrink-0">
-                    <i class="fa fa-bars"></i>
-                </a>
-                <form asp-controller="@ViewBag.ControllerName" asp-action="Search" method="get" class="d-none d-md-flex ms-4">
-                    <input class="form-control border-0" type="search" name="searchString" placeholder="Tìm kiếm">
-                </form>
-                <div class="navbar-nav align-items-center ms-auto">
+                    <div class="nav-item">
+                        @if (!ViewBag.IsAdmin && ViewBag.UserName != null)
+                        {
+                            <a asp-controller="Client" asp-action="Index" class="nav-link">
+                                <i class="fas fa-desktop me-2"></i>Đặt máy
+                            </a>
+                        }
+                    </div>
+                    <div class="nav-item">
+                        @if (!ViewBag.IsAdmin && ViewBag.UserName != null)
+                        {
+                            <a asp-controller="Client" asp-action="TopUp" class="nav-link">
+                                <i class="fas fa-wallet me-2"></i>Nạp tiền
+                            </a>
+                        }
+                    </div>
                     <div class="nav-item dropdown">
-                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            @if (!string.IsNullOrEmpty(ViewBag.Image))
-                            {
-                                <img class="rounded-circle me-lg-2" src="@Url.Content(ViewBag.Image)" alt="User Image" style="width: 40px; height: 40px;">
-                            }
-                            else
-                            {
-                                <i class="fas fa-user-circle me-lg-2" style="font-size: 40px;"></i>
-                            }
-                            <span class="d-none d-lg-inline-flex">@(ViewBag.UserName ?? "Khách")</span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                            <div class="dropdown-header bg-light py-2">
-                                <div class="d-flex align-items-center">
-                                    @if (!string.IsNullOrEmpty(ViewBag.Image))
-                                    {
-                                        <img class="rounded-circle me-2" src="@Url.Content(ViewBag.Image)" alt="User Image" style="width: 32px; height: 32px;">
-                                    }
-                                    else
-                                    {
-                                        <i class="fas fa-user-circle me-2" style="font-size: 32px;"></i>
-                                    }
-                                    <div>
-                                        <h6 class="mb-0">@(ViewBag.UserName ?? "Khách")</h6>
-                                        <small class="text-muted">@(User.IsInRole("Admin") ? "Quản trị viên" : ViewBag.UserName != null ? "Người dùng" : "Khách")</small>
-                                    </div>
-                                </div>
+                        <a href="#" class="nav-link user-dropdown" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle fa-lg user-icon"></i>
+                            <div class="user-info d-none d-lg-block">
+                                <span class="user-name">@(ViewBag.UserName ?? "Khách")</span>
+                                @if (ViewBag.UserName != null && !ViewBag.IsAdmin)
+                                {
+                                    <span class="user-balance">@(decimal.Parse(ViewBag.Balance).ToString("N0")) VNĐ</span>
+                                }
                             </div>
-                            <div class="dropdown-divider"></div>
+                            <i class="fas fa-chevron-down" style="font-size: 12px; color: #6C7293;"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end bg-light rounded-0 rounded-bottom m-0">
                             @if (ViewBag.UserName != null)
                             {
                                 <a asp-controller="Account" asp-action="Profile" class="dropdown-item">
-                                    <i class="fas fa-user me-2"></i>Thông tin cá nhân
+                                    <i class="fas fa-user"></i>Thông tin cá nhân
                                 </a>
+                                <div class="dropdown-divider"></div>
                                 <a asp-controller="Account" asp-action="Logout" class="dropdown-item">
-                                    <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                                    <i class="fas fa-sign-out-alt"></i>Đăng xuất
                                 </a>
                             }
                             else
                             {
-                                <a asp-controller="Account" asp-action="Login" class="dropdown-item">
-                                    <i class="fas fa-sign-in-alt me-2"></i>Đăng nhập
+                                <a asp-controller="Account" asp-action="SignIn" class="dropdown-item">
+                                    <i class="fas fa-sign-in-alt"></i>Đăng nhập
                                 </a>
                                 <a asp-controller="Account" asp-action="Register" class="dropdown-item">
-                                    <i class="fas fa-user-plus me-2"></i>Đăng ký
+                                    <i class="fas fa-user-plus"></i>Đăng ký
                                 </a>
                             }
                         </div>
@@ -152,9 +299,38 @@
                 </div>
             </nav>
             <!-- Navbar End -->
-            <div style="min-height:600px;">@RenderBody()</div>
+            <div class="container-fluid pt-4 px-4 pb-4" style="min-height: calc(100vh - 150px);">
+                @RenderBody()
+            </div>
             
-            @await Html.PartialAsync("_Footer")
+            <!-- Footer Start -->
+            <div class="footer">
+                <div class="container-fluid px-4">
+                    <div class="footer-content">
+                        <div class="footer-brand">
+                            <h3><i class="fa fa-hashtag"></i>NetManagement</h3>
+                            <span style="color: #6C7293; font-size: 14px;">Hệ thống quản lý quán net chuyên nghiệp</span>
+                        </div>
+                        <div class="footer-links">
+                            <a href="#"><i class="fas fa-info-circle me-1"></i>Hướng dẫn sử dụng</a>
+                            <a href="#"><i class="fas fa-headset me-1"></i>Hỗ trợ</a>
+                            <a href="#"><i class="fas fa-shield-alt me-1"></i>Bảo mật</a>
+                        </div>
+                        <div class="footer-info">
+                            <div style="color: #6C7293; font-size: 14px; margin-bottom: 5px;">
+                                <i class="fas fa-phone-alt me-1"></i>Hotline: 1900-xxxx
+                            </div>
+                            <div style="color: #6C7293; font-size: 14px;">
+                                <i class="fas fa-envelope me-1"></i>Email: support@netmanagement.com
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-3" style="color: #6C7293; font-size: 13px;">
+                        © @DateTime.Now.Year NetManagement. All rights reserved.
+                    </div>
+                </div>
+            </div>
+            <!-- Footer End -->
         </div>
         <!-- Content End -->
     </div>

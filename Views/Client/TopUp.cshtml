@@ -1,5 +1,287 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@model NetManagement.Models.User
+
 @{
+    ViewData["Title"] = "Nạp tiền";
+}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="bg-light rounded h-100 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <a asp-controller="Client" asp-action="Index" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Quay lại đặt máy
+                    </a>
+                    <div class="text-center flex-grow-1">
+                        <h3 class="text-primary mb-0">
+                            <i class="fas fa-wallet me-2"></i>
+                            Nạp tiền vào tài khoản
+                        </h3>
+                        <p class="text-muted">Chọn số tiền bạn muốn nạp vào tài khoản</p>
+                    </div>
+                    <div style="width: 106px;"></div> <!-- Để cân bằng layout -->
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <!-- Form chọn số tiền -->
+                        <div class="card bg-white shadow-sm">
+                            <div class="card-body">
+                                <div class="text-center mb-4">
+                                    <h4 class="text-primary mb-3">@Model.UserName</h4>
+                                    <p class="text-muted mb-0">
+                                        <i class="fas fa-wallet me-2"></i>
+                                        Số dư hiện tại: @Model.Balance.ToString("N0") VNĐ
+                                    </p>
+                                </div>
+                                <hr>
+                                @if (TempData["Error"] != null)
+                                {
+                                    <div class="alert alert-danger">
+                                        @TempData["Error"]
+                                    </div>
+                                }
+                                @if (TempData["Success"] != null)
+                                {
+                                    <div class="alert alert-success">
+                                        @TempData["Success"]
+                                    </div>
+                                }
+                                <form id="topUpForm" onsubmit="return showConfirmModal(event)">
+                                    <div class="mb-4">
+                                        <label class="form-label">Chọn số tiền nạp</label>
+                                        <div class="d-grid gap-2">
+                                            <div class="row g-2">
+                                                <div class="col-6">
+                                                    <button type="button" onclick="selectAmount(50000)" class="btn btn-outline-primary w-100 py-3">
+                                                        50,000 VNĐ
+                                                    </button>
+                                                </div>
+                                                <div class="col-6">
+                                                    <button type="button" onclick="selectAmount(100000)" class="btn btn-outline-primary w-100 py-3">
+                                                        100,000 VNĐ
+                                                    </button>
+                                                </div>
+                                                <div class="col-6">
+                                                    <button type="button" onclick="selectAmount(200000)" class="btn btn-outline-primary w-100 py-3">
+                                                        200,000 VNĐ
+                                                    </button>
+                                                </div>
+                                                <div class="col-6">
+                                                    <button type="button" onclick="selectAmount(500000)" class="btn btn-outline-primary w-100 py-3">
+                                                        500,000 VNĐ
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label">Hoặc nhập số tiền khác</label>
+                                        <div class="input-group">
+                                            <input type="number" id="customAmount" class="form-control" placeholder="Nhập số tiền" min="1000" step="1000">
+                                            <span class="input-group-text">VNĐ</span>
+                                        </div>
+                                        <div class="form-text">Số tiền tối thiểu: 1,000 VNĐ</div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100 py-2">
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        Xác nhận số tiền
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal xác nhận số tiền -->
+<div class="modal fade" id="confirmModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Xác nhận số tiền nạp</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn muốn nạp <span id="confirmAmount" class="fw-bold text-primary"></span> vào tài khoản?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="showTransferInfo()">
+                    <i class="fas fa-check me-2"></i>
+                    Xác nhận
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal thông tin chuyển khoản -->
+<div class="modal fade" id="transferModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Thông tin chuyển khoản</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info mb-4">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Vui lòng chuyển khoản theo thông tin bên dưới và nhấn xác nhận sau khi đã chuyển khoản.
+                </div>
+                
+                <div class="mb-3">
+                    <label class="text-muted d-block">Ngân hàng:</label>
+                    <span class="fw-bold">Vietcombank</span>
+                </div>
+                <div class="mb-3">
+                    <label class="text-muted d-block">Số tài khoản:</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" value="1234567890" id="accountNumber" readonly>
+                        <button class="btn btn-outline-primary" type="button" onclick="copyToClipboard('accountNumber')">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="text-muted d-block">Chủ tài khoản:</label>
+                    <span class="fw-bold">NGUYEN VAN A</span>
+                </div>
+                <div class="mb-3">
+                    <label class="text-muted d-block">Số tiền:</label>
+                    <span class="fw-bold text-primary" id="transferAmount"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="text-muted d-block">Nội dung chuyển khoản:</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" value="NT @Model.UserName" id="transferContent" readonly>
+                        <button class="btn btn-outline-primary" type="button" onclick="copyToClipboard('transferContent')">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="goBack()">Quay lại</button>
+                <form asp-action="ProcessTopUp" method="post" id="confirmForm">
+                    <input type="hidden" name="amount" id="confirmAmountInput">
+                    <button type="submit" class="btn btn-primary" onclick="startProcessing()">
+                        <i class="fas fa-check me-2"></i>
+                        Đã chuyển khoản
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal xử lý -->
+<div class="modal fade" id="processingModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-4">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <h5 class="mb-3">Đang xử lý giao dịch</h5>
+                <p class="text-muted mb-0">Vui lòng đợi trong giây lát...</p>
+                <div class="progress mt-3" style="height: 5px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" id="progressBar" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let currentAmount = 0;
+
+        function copyToClipboard(elementId) {
+            var copyText = document.getElementById(elementId);
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value);
+            
+            // Show tooltip
+            var button = event.currentTarget;
+            var originalHtml = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-check"></i>';
+            setTimeout(() => {
+                button.innerHTML = originalHtml;
+            }, 1000);
+        }
+
+        function selectAmount(amount) {
+            document.getElementById('customAmount').value = amount;
+        }
+
+        function showConfirmModal(event) {
+            event.preventDefault();
+            var amount = document.getElementById('customAmount').value;
+            
+            if (!amount || amount < 1000) {
+                alert('Vui lòng nhập số tiền hợp lệ (tối thiểu 1,000 VNĐ)');
+                return false;
+            }
+
+            currentAmount = amount;
+            document.getElementById('confirmAmount').textContent = new Intl.NumberFormat('vi-VN').format(amount) + ' VNĐ';
+            var modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+            modal.show();
+            return false;
+        }
+
+        function showTransferInfo() {
+            // Hide confirm modal
+            var confirmModal = bootstrap.Modal.getInstance(document.getElementById('confirmModal'));
+            confirmModal.hide();
+
+            // Update transfer info
+            document.getElementById('transferAmount').textContent = new Intl.NumberFormat('vi-VN').format(currentAmount) + ' VNĐ';
+            document.getElementById('confirmAmountInput').value = currentAmount;
+
+            // Show transfer modal
+            var transferModal = new bootstrap.Modal(document.getElementById('transferModal'));
+            transferModal.show();
+        }
+
+        function goBack() {
+            // Hide transfer modal
+            var transferModal = bootstrap.Modal.getInstance(document.getElementById('transferModal'));
+            transferModal.hide();
+
+            // Show confirm modal
+            var confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+            confirmModal.show();
+        }
+
+        function startProcessing() {
+            // Hide transfer modal
+            var transferModal = bootstrap.Modal.getInstance(document.getElementById('transferModal'));
+            transferModal.hide();
+
+            // Show processing modal
+            var processingModal = new bootstrap.Modal(document.getElementById('processingModal'));
+            processingModal.show();
+
+            // Start progress bar animation
+            var progress = 0;
+            var progressBar = document.getElementById('progressBar');
+            var interval = setInterval(() => {
+                progress += 2;
+                progressBar.style.width = progress + '%';
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    document.getElementById('confirmForm').submit();
+                }
+            }, 100);
+        }
+    </script>
 }
