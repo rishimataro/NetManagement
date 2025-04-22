@@ -47,11 +47,52 @@
 
 ## Hướng dẫn chạy chương trình
 
-* How to run the program
-* Step-by-step bullets
+### Yêu cầu hệ thống
+
+* Visual Studio 2022.
+* SQL Server.
+* .NET Framework ASP.NET.
+
+### Các bước chạy chương trình
+
+1. **Clone hoặc tải project về máy:**
+
+```bash
+git clone https://github.com/rishimataro/NetManagement.git
 ```
-code blocks for commands
+
+2. **Mở file `.sln` bằng Visual Studio 2022.**
+
+3. **Cấu hình chuỗi kết nối đến SQL Server trong file `appsettings.json`:**
+
+```xml
+<connectionStrings>
+  ...
+  "ConnectionStrings": {
+    "NetManagementContext": "Server=[your_server;Database=[your_database];Trusted_Connection=True;MultipleActiveResultSets=true;Encrypt=False;TrustServerCertificate=True"
+}
+</connectionStrings>
 ```
+
+4. **Tạo cơ sở dữ liệu:**
+
+* Trong Visual Studio, vào:
+Tools > NuGet Package Manager > Package manage console
+* Nhập câu lệnh:
+```
+Add-Migrations [your_database_name]
+Update-Database
+```
+* Vào SQL Server và tự tạo dữ liệu.
+
+5. **Build và chạy chương trình:**
+
+* Nhấn `Ctrl + F5` trong Visual Studio hoặc bấm nút “Start”.
+
+6. **Đăng nhập và sử dụng hệ thống:**
+
+* Có thể tạo tài khoản người dùng mới hoặc đăng nhập với tài khoản quản lý (có thể có sẵn trong database).
+
 
 ## Hình ảnh demo chương trình
 
