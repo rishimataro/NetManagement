@@ -32,7 +32,7 @@
                 <div class="form-group">
                     <label for="computerId">Máy</label>
                     <select class="form-control" id="computerId" name="computerId" required>
-                        <option value="">Chọn Máy</option>
+                        <option value="">Chọn máy</option>
                         @if (ViewBag.Computers != null)
                         {
                             foreach (var computer in ViewBag.Computers)
@@ -57,7 +57,7 @@
         </div>
         <div class="row mt-3">
             <div class="col-md-12 text-center">
-                <button type="submit" class="btn btn-primary">Xem Thống kê</button>
+                <button type="submit" class="btn btn-primary">Xem thống kê</button>
             </div>
         </div>
     </form>
@@ -67,13 +67,13 @@
     {
         <div class="card mb-4">
             <div class="card-header">
-                <h3 class="mb-0">Tổng quan Doanh thu theo Máy</h3>
+                <h3 class="mb-0">Tổng quan doanh thu theo máy</h3>
             </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <h4>Tổng Doanh thu từ @ViewBag.StartDate?.ToString("yyyy-MM-dd") đến @ViewBag.EndDate?.ToString("yyyy-MM-dd"):</h4>
-                        <h2 class="text-primary">@ViewBag.Revenue.ToString("N0") ₫</h2>
+                        <h4>Tổng doanh thu từ @ViewBag.StartDate?.ToString("yyyy-MM-dd") đến @ViewBag.EndDate?.ToString("yyyy-MM-dd"):</h4>
+                        <h2 class="text-primary">@ViewBag.Revenue.ToString("N0") VNĐ</h2>
                     </div>
                     <div class="col-md-6">
                         <div class="mt-4">
@@ -87,7 +87,7 @@
         <!-- Display order details -->
         <div class="card">
             <div class="card-header">
-                <h4 class="mb-0">Chi tiết Đơn hàng theo Máy</h4>
+                <h4 class="mb-0">Chi tiết đơn hàng theo máy</h4>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -107,11 +107,11 @@
                             {
                                 <tr>
                                     <td>@order.Id</td>
-                                    <td>@order.User?.UserName ?? "N/A"</td>
-                                    <td>@order.Computer?.Name ?? "N/A"</td>
+                                    <td>@order.User?.UserName</td>
+                                    <td>@order.Computer?.Name</td>
                                     <td>@order.StartTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
-                                    <td>@order.EndTime?.ToString("yyyy-MM-dd HH:mm:ss") ?? "N/A"</td>
-                                    <td>@order.TotalCost.ToString("N0") ₫</td>
+                                    <td>@order.EndTime?.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                    <td>@order.TotalCost.ToString("N0") VNĐ</td>
                                 </tr>
                             }
                         </tbody>
@@ -170,7 +170,7 @@
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    return context.raw.toLocaleString() + ' ₫';
+                                    return context.raw.toLocaleString() + ' VNĐs';
                                 }
                             }
                         }
@@ -180,7 +180,7 @@
                             beginAtZero: true,
                             ticks: {
                                 callback: function(value) {
-                                    return value.toLocaleString() + ' ₫';
+                                    return value.toLocaleString() + ' VNĐ';
                                 }
                             }
                         }
